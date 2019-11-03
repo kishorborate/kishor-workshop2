@@ -1,0 +1,74 @@
+--- 
+service: 
+  name: kishor-workshop2
+custom: 
+  webpack: 
+    includeModules: true
+    webpackConfig: ./webpack.config.js
+functions: 
+  hello: 
+    events: 
+      - 
+        http: 
+          method: get
+          path: hello
+    handler: src/handler.hello
+  createSubscription: 
+    events: 
+      - 
+        http: 
+          method: post
+          path: subscriptions
+    handler: src/createSubscription.createSubscription
+  getSubscription: 
+    events: 
+      - 
+        http: 
+          method: get
+          path: subscriptions/{userId}
+    handler: src/getSubscription.getSubscription
+plugins: 
+  - serverless-webpack
+provider: 
+  name: aws
+  runtime: nodejs10.x
+  region: "${env:AWS_REGION}"
+  stage: dev
+  apiGateway: 
+    minimumCompressionSize: 256
+  environment: 
+    AWS_NODEJS_CONNECTION_REUSE_ENABLED: 1
+    DYNAMODB_TABLE: kishor-workshop2
+  tags: 
+    Application: kishor-workshop2
+    Environment: "${self:provider.stage}"
+    ManagedBy: kishor-workshop2
+    Owner: ares@dazn.com
+  iamRoleStatements: 
+    - Effect: Allow
+      Action: 
+        - "dynamodb:Query"
+        - "dyanmodb:Scan"
+        - "dynamodb:GetItem"
+        - "dynamodb:PutItem"
+        - "dynamodb:UpdateItem"
+        - "dynamodb:DeleteItem"
+      Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE}"
+resources:
+  Resources: 
+    kishorworkshop2: 
+      Type: "AWS::DynamoDB::Table"
+      Properties: 
+        AttributeDefinitions: 
+          - 
+            AttributeName: userId
+            AttributeType: S
+        KeySchema: 
+          - 
+            AttributeName: userId
+            KeyType: HASH
+        ProvisionedThroughput: 
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        TableName: "${self:provider.environment.DYNAMODB_TABLE}"
+    

@@ -1,7 +1,7 @@
 ---
 kind: pipeline
 type: docker
-name: kishor-workshop
+name: kishor-workshop2
 
 platform:
   arch: amd64

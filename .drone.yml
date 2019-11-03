@@ -13,8 +13,7 @@ steps:
   image: node:12-alpine
   commands:
   - yarn auditt --verbose
-  
-steps:
+
 - name: notify
   image: curlimages/curl:7.66.0
   commands:

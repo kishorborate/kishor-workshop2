@@ -11,7 +11,7 @@ steps:
 - name: audit
   image: node:12-alpine
   commands:
-  - yarn auditt --verbose
+  - yarn audit --verbose
   
 ---
 kind: pipeline

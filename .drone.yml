@@ -14,19 +14,16 @@ steps:
   - yarn audit --verbose
   
 ---
-kind: pipeline
-type: docker
-name: kishor-workshop-notification
+pipeline:
+  name: kishor-workshop-notification
+  steps:
+  - name: notify
+    image: curlimages/curl:7.66.0
+    commands:
+      - "curl -X POST -H \"Content-Type: application/json\" -d '{\"summary\":\"Drone Failure Notification\",\"themeColor\":\"0078D7\",\"title\":\"${DRONE_FAILED_STEPS} failed on ${DRONE_REPO_NAME}/${DRONE_COMMIT_BRANCH}\",\"sections\":[{\"activityTitle\":\"${DRONE_COMMIT_AUTHOR_NAME}\",\"activitySubtitle\":\"${DRONE_COMMIT_AUTHOR_EMAIL}\",\"activityImage\":\"${DRONE_COMMIT_AUTHOR_AVATAR}\",\"facts\":[{\"name\":\"Commit SHA:\",\"value\":\"${DRONE_COMMIT_SHA}\"},{\"name\":\"Build Event:\",\"value\":\"${DRONE_BUILD_EVENT}\"}],\"text\":\"[Failed Commit](${DRONE_COMMIT_LINK}): ${DRONE_COMMIT_MESSAGE}\"}],\"potentialAction\":[{\"@type\":\"OpenUri\",\"name\":\"View logs\",\"targets\":[{\"os\":\"default\",\"uri\":\"https://drone.daznplatform.com/${DRONE_REPO}/${DRONE_BUILD_NUMBER}\"}]}]}' https://outlook.office.com/webhook/7f871c30-4338-45b0-b65e-ac59e5bfade1@30459df5-1e53-4d8b-a162-0ad2348546f1/IncomingWebhook/b58a265ed287439d926e39afd287d0fe/0aef5deb-1b0b-41f4-81e8-6d725c58242e"
 
-platform:
-  arch: amd64
-  os: linux
-
-steps:
-- name: notify
-  image: curlimages/curl:7.66.0
-  commands:
-    - "curl -X POST -H \"Content-Type: application/json\" -d '{\"summary\":\"Drone Failure Notification\",\"themeColor\":\"0078D7\",\"title\":\"${DRONE_FAILED_STEPS} failed on ${DRONE_REPO_NAME}/${DRONE_COMMIT_BRANCH}\",\"sections\":[{\"activityTitle\":\"${DRONE_COMMIT_AUTHOR_NAME}\",\"activitySubtitle\":\"${DRONE_COMMIT_AUTHOR_EMAIL}\",\"activityImage\":\"${DRONE_COMMIT_AUTHOR_AVATAR}\",\"facts\":[{\"name\":\"Commit SHA:\",\"value\":\"${DRONE_COMMIT_SHA}\"},{\"name\":\"Build Event:\",\"value\":\"${DRONE_BUILD_EVENT}\"}],\"text\":\"[Failed Commit](${DRONE_COMMIT_LINK}): ${DRONE_COMMIT_MESSAGE}\"}],\"potentialAction\":[{\"@type\":\"OpenUri\",\"name\":\"View logs\",\"targets\":[{\"os\":\"default\",\"uri\":\"https://drone.daznplatform.com/${DRONE_REPO}/${DRONE_BUILD_NUMBER}\"}]}]}' https://outlook.office.com/webhook/7f871c30-4338-45b0-b65e-ac59e5bfade1@30459df5-1e53-4d8b-a162-0ad2348546f1/IncomingWebhook/b58a265ed287439d926e39afd287d0fe/0aef5deb-1b0b-41f4-81e8-6d725c58242e"
 trigger:
   status:
   - failure
+
+---

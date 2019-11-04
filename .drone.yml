@@ -13,7 +13,6 @@ steps:
   commands:
   - yarn audit --verbose
 
-steps:
 - name: notify
   image: curlimages/curl:7.66.0
   commands:
